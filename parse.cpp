@@ -8,10 +8,9 @@
 
 using namespace std;
 
-unordered_map<string, vector<string>> processString(const string& input) {
+unordered_map<int, vector<string>> processString(const string& input) {
     stack<char> charStack;
-    stack<int> levelStack;
-    unordered_map<string, vector<string>> resultMap;
+    unordered_map<int, vector<string>> resultMap;
 
     int currentLevel = 0;
 
@@ -19,34 +18,32 @@ unordered_map<string, vector<string>> processString(const string& input) {
         if (ch == '{') {
             // Đẩy '{' vào stack và tăng cấp độ
             charStack.push(ch);
-            levelStack.push(currentLevel);
             currentLevel++;
         } else if (ch == '}') {
             // Khi gặp '}', pop đến '{' và lưu các phần tử trong đó
             vector<string> temp;
-            int startLevel = levelStack.top();
-            levelStack.pop();
-            currentLevel--;
-
             // Pop đến khi gặp '{'
             while (!charStack.empty()) {
                 char topChar = charStack.top();
                 charStack.pop();
-                if (topChar == '{') {
+                if (topChar == '{') 
+                {
                     break;
-                } else {
+                } else 
+                {
                     // Lưu phần tử vào tạm
                     temp.push_back(string(1, topChar));
                 }
             }
-
             // Đảo ngược để giữ thứ tự ban đầu
             reverse(temp.begin(), temp.end());
-
             // Lưu các phần tử vào map theo cấp độ
-            string key = "level_" + to_string(startLevel);
+            int key = currentLevel;
             resultMap[key].insert(resultMap[key].end(), temp.begin(), temp.end());
-        } else {
+            currentLevel--;
+
+        } else 
+        {
             // Các ký tự khác, thêm vào stack
             charStack.push(ch);
         }
@@ -57,16 +54,33 @@ unordered_map<string, vector<string>> processString(const string& input) {
 
 int main() {
     string input =R"(
+{
+    "glossary": 
     {
-        "name": "John, Doe",
-        "age": 30,
-        "city": "New York",
-        "skills": {"primary": "C++", "secondary": "Python"},
-        "projects": [{"name": "Project1"}, {"name": "Project2"}],
-        "emptyArray": [],
-        "nullValue": null,
-        "boolean": true
+        "title": "example glossary",
+		"GlossDiv": 
+        {
+            "title": "S",
+			"GlossList": 
+            {
+                "GlossEntry": 
+                {
+                    "ID": "SGML",
+					"SortAs": "SGML",
+					"GlossTerm": "Standard Generalized Markup Language",
+					"Acronym": "SGML",
+					"Abbrev": "ISO 8879:1986",
+					"GlossDef": 
+                    {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+						"GlossSeeAlso": ["GML", "XML"]
+                    },
+					"GlossSee": "markup"
+                }
+            }
+        }
     }
+}
     )";;
     auto result = processString(input);
 
@@ -74,7 +88,7 @@ int main() {
     for (const auto& pair : result) {
         cout << pair.first << ": ";
         for (const auto& val : pair.second) {
-            cout << val << " ";
+            cout << val ;
         }
         cout << endl;
     }
