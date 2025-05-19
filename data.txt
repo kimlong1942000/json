@@ -1,0 +1,14 @@
+{
+    "address": {
+        "city": "Hanoi",
+        "country": "Vietnam"
+    },
+    "age": 30,
+    "hobbies": [
+        "reading",
+        "coding",
+        "traveling"
+    ],
+    "is_student": false,
+    "name": "Nguyen Van A"
+}
